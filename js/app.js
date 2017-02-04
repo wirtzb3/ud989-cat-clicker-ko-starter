@@ -1,16 +1,11 @@
-var Cat = function() {
-  var self = this;
-  self.clickCount = ko.observable(0);
-  self.name = ko.observable('Cutie');
-  self.imgSrc = ko.observable('img/dog1.jpeg');
-  self.nickName = ko.observableArray([
-      { name: 'Doggy'},
-      { name: 'Pumpkin'},
-      { name: 'Poops'}
-    ]);
-  self.title = ko.computed(function() {
+var Cat = function(data) {
+  this.clickCount = ko.observable(data.clickCount);
+  this.name = ko.observable(data.name);
+  this.imgSrc = ko.observable(data.imgSrc);
+  this.nickName = ko.observableArray(data.nickName);
+  this.title = ko.computed(function() {
     var title;
-    var clicks = self.clickCount();
+    var clicks = this.clickCount();
     if (clicks < 5) {
       title = "Newborn";
     } else if (clicks < 13) {
@@ -23,26 +18,51 @@ var Cat = function() {
       title = "Senior"
     }
     return title;
-  })
-}
+  }, this);
+};
+var initialCats = [{
+    clickCount: 0,
+    name: 'Cutie',
+    imgSrc: 'img/dog1.jpeg',
+    nickName: ['Pumpkin', 'Poops', 'Shittyface']
+  },{
+    clickCount: 0,
+    name: 'Doggie',
+    imgSrc: 'img/dog2.jpg',
+    nickName: ['Poopoo', 'Squishy', 'Cod']
+  },{
+    clickCount: 0,
+    name: 'Shamooo',
+    imgSrc: 'img/dog3.jpeg',
+    nickName: ['Shampoo', 'Alligator', 'Mian']
+  },{
+    clickCount: 0,
+    name: 'Schoolie',
+    imgSrc: 'img/dog4.jpeg',
+    nickName: ['Herman', 'George', 'Bobby']
+  },{
+    clickCount: 0,
+    name: 'Lala',
+    imgSrc: 'img/dog5.jpeg',
+    nickName: ['Icky', 'Stinky', 'Pie']
+  } ];
 
 var ViewModel = function() {
-  self.currentCat = ko.observable(new Cat());
-  self.incrementCounter = function() {
-    self.currentCat().clickCount(self.currentCat().clickCount() + 1);
+  var self = this;
+  this.catList = ko.observableArray([]);
+  initialCats.forEach(function(catItem) {
+    self.catList.push(new Cat(catItem));
+  });
+
+  this.currentCat = ko.observable(this.catList()[0]);
+
+  this.incrementCounter = function() {
+    this.clickCount(this.clickCount() + 1);
   };
-}
+
+  this.setCat = function(clickedCat) {
+    self.currentCat(clickedCat);
+  };
+};
 
 ko.applyBindings(new ViewModel());
-
-
-
-  // function determineStage(stageObj, counter) {
-  //   if (counter > stageObj.threshold) {
-  //     return stageObj.stage
-  //   }
-  // }
-  //
-  // stages.forEach(stage, function(stage) {
-  //   return determineStage(stage, counter)
-  // })
